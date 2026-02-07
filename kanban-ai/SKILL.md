@@ -72,13 +72,13 @@ Before moving to `doing`, verify all IDs in `blocked_by` have status `done`. If 
 Run the bundled script for a formatted board view:
 
 ```bash
-bash kanban-ai/scripts/view_board.sh
+bash ~/.claude/skills/kanban-ai/scripts/view_board.sh
 ```
 
 Pass a custom kanban directory as an argument if it differs from `kanban/`:
 
 ```bash
-bash kanban-ai/scripts/view_board.sh path/to/kanban
+bash ~/.claude/skills/kanban-ai/scripts/view_board.sh path/to/kanban
 ```
 
 Outputs cards grouped by status column, with priority and blocked_by flags inline.
@@ -91,12 +91,12 @@ Helper scripts for searching the kanban board:
 Find all cards with a specific tag:
 
 ```bash
-bash kanban-ai/scripts/search_by_tag.sh kanban/ <tag>
+bash ~/.claude/skills/kanban-ai/scripts/search_by_tag.sh kanban/ <tag>
 ```
 
 Example:
 ```bash
-bash kanban-ai/scripts/search_by_tag.sh kanban/ ai-discoverability
+bash ~/.claude/skills/kanban-ai/scripts/search_by_tag.sh kanban/ ai-discoverability
 ```
 
 Output: Lists cards with that tag (ID, status, title)
@@ -105,12 +105,12 @@ Output: Lists cards with that tag (ID, status, title)
 Full-text search across card content:
 
 ```bash
-bash kanban-ai/scripts/search_content.sh kanban/ "<search term>"
+bash ~/.claude/skills/kanban-ai/scripts/search_content.sh kanban/ "<search term>"
 ```
 
 Example:
 ```bash
-bash kanban-ai/scripts/search_content.sh kanban/ "temporal signals"
+bash ~/.claude/skills/kanban-ai/scripts/search_content.sh kanban/ "temporal signals"
 ```
 
 Output: Cards matching the search term with context lines
@@ -119,7 +119,7 @@ Output: Cards matching the search term with context lines
 List all cards that are blocked and their blockers:
 
 ```bash
-bash kanban-ai/scripts/show_blocked.sh kanban/
+bash ~/.claude/skills/kanban-ai/scripts/show_blocked.sh kanban/
 ```
 
 Output: Cards with non-empty `blocked_by` field and what's blocking them
@@ -128,7 +128,7 @@ Output: Cards with non-empty `blocked_by` field and what's blocking them
 Show tag usage across the board:
 
 ```bash
-bash kanban-ai/scripts/list_tags.sh kanban/
+bash ~/.claude/skills/kanban-ai/scripts/list_tags.sh kanban/
 ```
 
 Output: All tags sorted by usage count (most used first)
