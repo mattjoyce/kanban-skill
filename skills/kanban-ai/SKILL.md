@@ -69,68 +69,40 @@ Before moving to `doing`, verify all IDs in `blocked_by` have status `done`. If 
 
 ## Viewing the Board
 
-Run the bundled script for a formatted board view:
+Helper scripts are bundled in the `scripts/` directory alongside this skill file. To locate them, find this skill's directory within the installed plugin (e.g., using `glob` for `**/kanban-ai/scripts/view_board.sh`).
+
+Run the board view script:
 
 ```bash
-bash ~/.claude/skills/kanban-ai/scripts/view_board.sh
-```
-
-Pass a custom kanban directory as an argument if it differs from `kanban/`:
-
-```bash
-bash ~/.claude/skills/kanban-ai/scripts/view_board.sh path/to/kanban
+bash <SCRIPTS_DIR>/view_board.sh kanban/
 ```
 
 Outputs cards grouped by status column, with priority and blocked_by flags inline.
 
 ## Searching and Filtering
 
-Helper scripts for searching the kanban board:
-
 ### Search by Tag
-Find all cards with a specific tag:
-
 ```bash
-bash ~/.claude/skills/kanban-ai/scripts/search_by_tag.sh kanban/ <tag>
+bash <SCRIPTS_DIR>/search_by_tag.sh kanban/ <tag>
 ```
-
-Example:
-```bash
-bash ~/.claude/skills/kanban-ai/scripts/search_by_tag.sh kanban/ ai-discoverability
-```
-
-Output: Lists cards with that tag (ID, status, title)
+Output: Cards with that tag (ID, status, title)
 
 ### Search Content
-Full-text search across card content:
-
 ```bash
-bash ~/.claude/skills/kanban-ai/scripts/search_content.sh kanban/ "<search term>"
+bash <SCRIPTS_DIR>/search_content.sh kanban/ "<search term>"
 ```
-
-Example:
-```bash
-bash ~/.claude/skills/kanban-ai/scripts/search_content.sh kanban/ "temporal signals"
-```
-
 Output: Cards matching the search term with context lines
 
 ### Show Blocked Cards
-List all cards that are blocked and their blockers:
-
 ```bash
-bash ~/.claude/skills/kanban-ai/scripts/show_blocked.sh kanban/
+bash <SCRIPTS_DIR>/show_blocked.sh kanban/
 ```
-
 Output: Cards with non-empty `blocked_by` field and what's blocking them
 
 ### List All Tags
-Show tag usage across the board:
-
 ```bash
-bash ~/.claude/skills/kanban-ai/scripts/list_tags.sh kanban/
+bash <SCRIPTS_DIR>/list_tags.sh kanban/
 ```
-
 Output: All tags sorted by usage count (most used first)
 
-**Note:** All scripts take the kanban directory as the first argument. If omitted, they default to the current directory.
+**Note:** `<SCRIPTS_DIR>` refers to the `scripts/` directory next to this SKILL.md file. All scripts take the kanban directory as the first argument. If omitted, they default to the current directory.
