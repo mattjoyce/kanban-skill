@@ -7,6 +7,21 @@ description: Manage a Markdown-based Kanban board using card files in a kanban/ 
 
 Manage a Kanban board as Markdown files in the `kanban/` directory. Each file is a card. The board state is derived by reading all files and grouping by `status`.
 
+## Narrative Record (Required)
+
+Treat cards as durable source material for future review. Do not rewrite or delete prior narrative content unless explicitly asked. When updating a card, append a brief narrative note to a `## Narrative` section at the end of the file. Focus on reasons, discoveries, insights, and decisions. Avoid transactional status-change logs unless they matter to the story. Use ISO dates.
+
+Narrative entry format:
+
+```markdown
+## Narrative
+- 2026-02-05: Discovered the auth flow must support device-based MFA; shifted approach to use WebAuthn. (by @assistant)
+```
+
+If the card has no `## Narrative` section, add it. If a change is minor (e.g., typo), skip the narrative note unless it carries meaningful insight.
+
+When a card is moved to `done`, add enough narrative detail that a future reader can understand the card’s story and outcome. Keep it coherent and complete without being verbose.
+
 ## Card Fields
 
 Each card's frontmatter supports the following fields:
@@ -22,6 +37,8 @@ Each card's frontmatter supports the following fields:
 ## Creating a Card
 
 Create a new `.md` file in `kanban/`. Filename should be kebab-case.
+
+If possible, include a Job Story using the structure “When [situation], I want to [motivation], so I can [expected outcome].” Do not force it; only add when it fits. If you add one, share it with the requester to confirm.
 
 ```markdown
 ---
@@ -65,3 +82,55 @@ bash kanban-ai/scripts/view_board.sh path/to/kanban
 ```
 
 Outputs cards grouped by status column, with priority and blocked_by flags inline.
+
+## Searching and Filtering
+
+Helper scripts for searching the kanban board:
+
+### Search by Tag
+Find all cards with a specific tag:
+
+```bash
+bash kanban-ai/scripts/search_by_tag.sh kanban/ <tag>
+```
+
+Example:
+```bash
+bash kanban-ai/scripts/search_by_tag.sh kanban/ ai-discoverability
+```
+
+Output: Lists cards with that tag (ID, status, title)
+
+### Search Content
+Full-text search across card content:
+
+```bash
+bash kanban-ai/scripts/search_content.sh kanban/ "<search term>"
+```
+
+Example:
+```bash
+bash kanban-ai/scripts/search_content.sh kanban/ "temporal signals"
+```
+
+Output: Cards matching the search term with context lines
+
+### Show Blocked Cards
+List all cards that are blocked and their blockers:
+
+```bash
+bash kanban-ai/scripts/show_blocked.sh kanban/
+```
+
+Output: Cards with non-empty `blocked_by` field and what's blocking them
+
+### List All Tags
+Show tag usage across the board:
+
+```bash
+bash kanban-ai/scripts/list_tags.sh kanban/
+```
+
+Output: All tags sorted by usage count (most used first)
+
+**Note:** All scripts take the kanban directory as the first argument. If omitted, they default to the current directory.
