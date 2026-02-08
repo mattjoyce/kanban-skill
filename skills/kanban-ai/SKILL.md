@@ -105,4 +105,10 @@ bash <SCRIPTS_DIR>/list_tags.sh kanban/
 ```
 Output: All tags sorted by usage count (most used first)
 
+### List All Cards
+```bash
+bash <SCRIPTS_DIR>/list_all_cards.sh kanban/
+```
+Output: All cards in pipe-delimited format (id|status|blocked_by|title), sorted by ID. Useful for parsing, debugging dependencies, or exporting board state.
+
 **Note:** `<SCRIPTS_DIR>` refers to the `scripts/` directory next to this SKILL.md file. All scripts take the kanban directory as the first argument. If omitted, they default to the current directory.
