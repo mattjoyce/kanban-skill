@@ -1,11 +1,11 @@
 ---
 name: kanban-ai
-description: Manage a Markdown-based Kanban board using card files in a kanban/ directory. Use when the user asks to create, move, view, list, or manage tasks or cards on a kanban board, or when tracking work items across statuses like backlog, todo, doing, done, or archive.
+description: Manage a Markdown-based Kanban board using card files in a kanban/ directory (including kanban/archived/ for completed cards). Use when the user asks to create, move, view, list, or manage tasks or cards on a kanban board, or when tracking work items across statuses like backlog, todo, doing, done, or archive.
 ---
 
 # Kanban AI Skill
 
-Manage a Kanban board as Markdown files in the `kanban/` directory. Each file is a card. The board state is derived by reading all files and grouping by `status`.
+Manage a Kanban board as Markdown files in the `kanban/` directory. Each file is a card. The board state is derived by reading all card files and grouping by `status`.
 
 ## Narrative Record (Required)
 
@@ -26,7 +26,7 @@ When a card is moved to `done`, add enough narrative detail that a future reader
 
 Each card's frontmatter supports the following fields:
 
-- `id` — Unique numeric identifier. Scan existing cards in `kanban/`, take max + 1. Start at `1` if empty. Reference cards by this number.
+- `id` — Unique numeric identifier. Scan existing cards in `kanban/` (including `kanban/archived/`), take max + 1. Start at `1` if empty. Reference cards by this number.
 - `status` — Column: `backlog`, `todo`, `doing`, `done`, or `archive`.
 - `priority` — `High` or `Normal`. Defaults to `Normal` if omitted.
 - `blocked_by` — List of card IDs that must be `done` before this card moves to `doing`. Example: `[3, 7]`. Omit or set to `[]` if unblocked.
@@ -66,6 +66,9 @@ Set up user authentication using JWTs.
 Update the `status` field in frontmatter.
 
 Before moving to `doing`, verify all IDs in `blocked_by` have status `done`. If any are not `done`, the card stays put.
+
+Cards with `status: done` may be moved into `kanban/archived/` to keep the main board tidy. This is a file-location move only; the card should remain a normal card with `status: done` unless explicitly changed.
+If `kanban/archived/` does not exist, create it under the active cards folder (`kanban/`) before moving the card.
 
 ## Viewing the Board
 
