@@ -14,7 +14,7 @@ fi
 echo "=== Cards matching: $SEARCH_TERM ==="
 echo
 
-grep -il "$SEARCH_TERM" "$KANBAN_DIR"/*.md 2>/dev/null | while read -r file; do
+{ find "$KANBAN_DIR" -maxdepth 2 -name "*.md" 2>/dev/null; } | xargs grep -il "$SEARCH_TERM" 2>/dev/null | while read -r file; do
     id=$(grep "^id:" "$file" | sed 's/id: *//')
     status=$(grep "^status:" "$file" | sed 's/status: *//')
     title=$(grep "^# " "$file" | head -1 | sed 's/^# //')

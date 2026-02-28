@@ -6,7 +6,7 @@ KANBAN_DIR="${1:-.}"
 echo "=== Blocked Cards ==="
 echo
 
-for file in "$KANBAN_DIR"/*.md; do
+for file in "$KANBAN_DIR"/*.md "$KANBAN_DIR"/archive/*.md; do
     [ -f "$file" ] || continue
 
     blocked_by=$(grep "^blocked_by:" "$file" | sed 's/blocked_by: *//' | tr -d '[]')

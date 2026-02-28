@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Display kanban cards grouped by status.
-# Usage: bash view_board.sh [kanban-directory]
+# Display kanban cards grouped by status (active cards only, excludes archive/).
+# Usage: bash view_board.sh <card-path>
 
-KANBAN_DIR="${1:-kanban}"
+KANBAN_DIR="${1:-.}"
 
 if [ ! -d "$KANBAN_DIR" ]; then
     echo "Error: '$KANBAN_DIR' not found." >&2
@@ -20,7 +20,7 @@ title() {
 }
 
 declare -A cols
-for s in backlog todo doing done archive; do cols[$s]=""; done
+for s in backlog todo doing done; do cols[$s]=""; done
 
 for f in "$KANBAN_DIR"/*.md; do
     [ -f "$f" ] || continue
@@ -39,7 +39,7 @@ for f in "$KANBAN_DIR"/*.md; do
     cols[$status]+="$line"$'\n'
 done
 
-for s in backlog todo doing done archive; do
+for s in backlog todo doing done; do
     printf "=== %-8s ===\n" "$(echo "$s" | tr '[:lower:]' '[:upper:]')"
     if [ -z "${cols[$s]}" ]; then
         echo "  (empty)"

@@ -6,7 +6,7 @@ KANBAN_DIR="${1:-.}"
 echo "=== Tag Usage ==="
 echo
 
-grep "^tags:" "$KANBAN_DIR"/*.md 2>/dev/null | \
+grep "^tags:" "$KANBAN_DIR"/*.md "$KANBAN_DIR"/archive/*.md 2>/dev/null | \
     sed 's/.*tags: //' | \
     tr -d '[]' | \
     tr ',' '\n' | \

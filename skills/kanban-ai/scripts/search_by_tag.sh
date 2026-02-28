@@ -14,7 +14,7 @@ fi
 echo "=== Cards tagged with: $TAG ==="
 echo
 
-grep -l "tags:.*$TAG" "$KANBAN_DIR"/*.md 2>/dev/null | while read -r file; do
+{ find "$KANBAN_DIR" -maxdepth 2 -name "*.md" 2>/dev/null; } | xargs grep -l "tags:.*$TAG" 2>/dev/null | while read -r file; do
     # Extract ID, status, and title
     id=$(grep "^id:" "$file" | sed 's/id: *//')
     status=$(grep "^status:" "$file" | sed 's/status: *//')
