@@ -116,3 +116,6 @@ Scripts are located at `skills/kanban-ai/scripts/` within the plugin directory.
 ## License
 
 Apache-2.0
+
+## Changelog
+See [CHANGELOG.md](CHANGELOG.md).
