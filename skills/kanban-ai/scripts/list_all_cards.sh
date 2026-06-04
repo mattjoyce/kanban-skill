@@ -11,4 +11,4 @@ for f in "$KANBAN_DIR"/*.md "$KANBAN_DIR"/archive/*.md; do
   blocked=$(grep "^blocked_by:" "$f" | sed 's/blocked_by: \[//' | sed 's/\]//')
   title=$(grep "^# " "$f" | head -1 | sed 's/^# //')
   echo "$id|$status|$blocked|$title"
-done | sort -n
+done | sort

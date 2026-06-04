@@ -9,13 +9,15 @@ Manage a Kanban board as Markdown files in a central cards repository. Each file
 
 ## Setup
 
-This skill requires the `KANBAN_BASE` environment variable pointing to your central kanban clone (e.g. `~/kanban/`).
+This skill requires the `KANBAN_BASE` environment variable pointing to your local clone of the shared kanban repo (e.g. `~/kanban`). The shared repo's `origin` is a **bare git repository on the NAS**, so every host and every agent pushes/pulls the same card stack. See `setup.sh` in the plugin root to bootstrap a clone.
 
-Card path is derived automatically from the current git repository:
+The project slug is derived from the repo's **git remote URL** (not its directory name) via the bundled `project_slug.sh`. This means two clones of the same repo — or the same repo checked out on different hosts — resolve to one shared card namespace, and two unrelated repos that happen to share a directory name do not collide:
 
 ```bash
-PROJECT_SLUG=$(basename "$(git rev-parse --show-toplevel)")
+SCRIPTS_DIR=<this skill's scripts/ dir>   # locate via glob: **/kanban-ai/scripts
+PROJECT_SLUG=$(bash "$SCRIPTS_DIR/project_slug.sh")
 CARD_PATH="$KANBAN_BASE/$PROJECT_SLUG/cards"
+mkdir -p "$CARD_PATH"
 ```
 
 Archived cards live in `$CARD_PATH/archive/`.
@@ -62,8 +64,8 @@ When a card is moved to `done`, add enough narrative detail that a future reader
 
 Each card's frontmatter supports the following fields:
 
-- `id` — Unique numeric identifier. Scan existing cards in `$CARD_PATH` (including `$CARD_PATH/archive/`), take max + 1. Start at `1` if empty. Reference cards by this number.
-- `status` — Column: `backlog`, `todo`, `doing`, `done`, or `archive`.
+- `id` — Short unique identifier, 4-char base36 (e.g. `7wu`, `a3k9`). Generate with `new_id.sh "$CARD_PATH"`, which random-generates and checks for collisions across `$CARD_PATH` and `$CARD_PATH/archive/`. **Do not use max+1** — sequential ids collide when two agents create cards concurrently in separate workspaces. Reference cards by this id.
+- `status` — Column: `backlog`, `todo`, `doing`, or `done`. (`archive` is a storage *location*, not a status — see Moving a Card.)
 - `priority` — `High` or `Normal`. Defaults to `Normal` if omitted.
 - `blocked_by` — List of card IDs that must be `done` before this card moves to `doing`. Example: `[3, 7]`. Omit or set to `[]` if unblocked.
 - `assignee` — (optional) Owner of the card.
@@ -72,13 +74,13 @@ Each card's frontmatter supports the following fields:
 
 ## Creating a Card
 
-Create a new `.md` file in `$CARD_PATH/`. Filename should be kebab-case.
+Create a new `.md` file in `$CARD_PATH/`. Filename should be kebab-case. Generate the id first: `id=$(bash "$SCRIPTS_DIR/new_id.sh" "$CARD_PATH")`.
 
 If possible, include a Job Story using the structure "When [situation], I want to [motivation], so I can [expected outcome]." Do not force it; only add when it fits. If you add one, share it with the requester to confirm.
 
 ```markdown
 ---
-id: 1
+id: a3k9
 status: todo
 priority: Normal
 blocked_by: []
@@ -151,5 +153,22 @@ bash <SCRIPTS_DIR>/list_tags.sh "$CARD_PATH"
 bash <SCRIPTS_DIR>/list_all_cards.sh "$CARD_PATH"
 ```
 Output: All cards in pipe-delimited format (id|status|blocked_by|title), sorted by ID.
+
+### Ready Work
+The most useful agent query: cards in `todo`/`backlog` whose `blocked_by` are all `done` — i.e. what can be picked up right now.
+```bash
+bash <SCRIPTS_DIR>/ready.sh "$CARD_PATH"
+```
+
+### Cross-Project Board
+Summarize every project under `KANBAN_BASE` at once — "what's on my plate everywhere" for agents working across workspaces.
+```bash
+bash <SCRIPTS_DIR>/board_all.sh "$KANBAN_BASE"
+```
+
+## Helper Scripts (internal)
+
+- `new_id.sh "$CARD_PATH"` — emit a fresh collision-checked 4-char id. Always use this for new cards.
+- `project_slug.sh` — print the remote-derived project slug (run inside the project repo).
 
 **Note:** `<SCRIPTS_DIR>` refers to the `scripts/` directory next to this SKILL.md file.
